@@ -37,4 +37,14 @@ export class BeneficioService {
   deletar(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  transferir(origemId: number, destinoId: number, valor: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/transferir`, {}, {
+      params: {
+        origemId: origemId.toString(),
+        destinoId: destinoId.toString(),
+        valor: valor.toString()
+      }
+    });
+  }
 }

@@ -1,52 +1,145 @@
 <div class="beneficio-container">
-  <h2>Gestão de Benefícios</h2>
+  <mat-toolbar color="primary" class="toolbar">
+    <h1>Gestão de Benefícios</h1>
+  </mat-toolbar>
 
-  <!-- Formulário -->
-  <form [formGroup]="form" (ngSubmit)="salvar()">
-    <div>
-      <label>Nome:</label>
-      <input formControlName="nome" required>
-    </div>
-    <div>
-      <label>Descrição:</label>
-      <input formControlName="descricao">
-    </div>
-    <div>
-      <label>Valor:</label>
-      <input type="number" formControlName="valor" min="0" required>
-    </div>
-    <div>
-      <label>Ativo:</label>
-      <input type="checkbox" formControlName="ativo">
-    </div>
-    <button type="submit">{{ editId ? 'Atualizar' : 'Criar' }}</button>
-    <button type="button" (click)="cancelar()">Cancelar</button>
-  </form>
+  <div class="content-wrapper">
+    <!-- Formulário em Card -->
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-card-title>{{ editId ? 'Editar Benefício' : 'Novo Benefício' }}</mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="salvar()">
+          <div class="form-grid">
+            <!-- Nome -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nome</mat-label>
+              <input matInput formControlName="nome" placeholder="Digite o nome do benefício">
+              <mat-error *ngIf="form.get('nome')!.hasError('required')">
+                Nome é obrigatório
+              </mat-error>
+            </mat-form-field>
 
-  <hr>
+            <!-- Descrição -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descrição</mat-label>
+              <textarea matInput formControlName="descricao" rows="3" placeholder="Descrição do benefício"></textarea>
+            </mat-form-field>
 
-  <!-- Tabela -->
-  <table border="1" cellspacing="0" cellpadding="5">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Descrição</th>
-        <th>Valor</th>
-        <th>Ativo</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let b of beneficios">
-        <td>{{ b.nome }}</td>
-        <td>{{ b.descricao }}</td>
-        <td>{{ b.valor | currency:'BRL' }}</td>
-        <td>{{ b.ativo ? 'Sim' : 'Não' }}</td>
-        <td>
-          <button (click)="editar(b)">Editar</button>
-          <button (click)="deletar(b.id!)">Deletar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+            <!-- Valor -->
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Valor (R$)</mat-label>
+              <input matInput type="number" formControlName="valor" min="0" step="0.01" placeholder="0.00">
+              <mat-error *ngIf="form.get('valor')!.hasError('required')">
+                Valor é obrigatório
+              </mat-error>
+              <mat-error *ngIf="form.get('valor')!.hasError('min')">
+                Valor não pode ser negativo
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Ativo -->
+            <div class="checkbox-wrapper">
+              <mat-checkbox formControlName="ativo" color="primary">
+                Ativo
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="button-group">
+            <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+              <mat-icon>{{ editId ? 'edit' : 'add' }}</mat-icon>
+              {{ editId ? 'Atualizar' : 'Criar' }}
+            </button>
+            <button mat-raised-button type="button" (click)="cancelar()" *ngIf="editId">
+              <mat-icon>close</mat-icon>
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabela em Card -->
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>Lista de Benefícios</mat-card-title>
+        <mat-card-subtitle>Total: {{ beneficios.length }} benefício(s)</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="table-content">
+        <div class="table-responsive">
+          <table mat-table [dataSource]="beneficios" class="beneficios-table">
+            
+            <!-- Nome Column -->
+            <ng-container matColumnDef="nome">
+              <th mat-header-cell *matHeaderCellDef>Nome</th>
+              <td mat-cell *matCellDef="let element">{{ element.nome }}</td>
+            </ng-container>
+
+            <!-- Descrição Column -->
+            <ng-container matColumnDef="descricao">
+              <th mat-header-cell *matHeaderCellDef>Descrição</th>
+              <td mat-cell *matCellDef="let element">
+                <span class="desc-truncate" [title]="element.descricao || '-'">
+                  {{ element.descricao || '-' }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Valor Column -->
+            <ng-container matColumnDef="valor">
+              <th mat-header-cell *matHeaderCellDef>Valor</th>
+              <td mat-cell *matCellDef="let element" class="valor-cell">
+                {{ element.valor | currency:'BRL':'symbol':'1.2-2' }}
+              </td>
+            </ng-container>
+
+            <!-- Ativo Column -->
+            <ng-container matColumnDef="ativo">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-chip-list>
+                  <mat-chip [ngClass]="element.ativo ? 'active' : 'inactive'" disabled>
+                    <mat-icon *ngIf="element.ativo">check_circle</mat-icon>
+                    <mat-icon *ngIf="!element.ativo">cancel</mat-icon>
+                    {{ element.ativo ? 'Ativo' : 'Inativo' }}
+                  </mat-chip>
+                </mat-chip-list>
+              </td>
+            </ng-container>
+
+            <!-- Ações Column -->
+            <ng-container matColumnDef="acoes">
+              <th mat-header-cell *matHeaderCellDef>Ações</th>
+              <td mat-cell *matCellDef="let element" class="acoes-cell">
+                <button mat-icon-button color="primary" (click)="transferir(element)" matTooltip="Transferir">
+                  <mat-icon>send</mat-icon>
+                </button>
+                <button mat-icon-button color="accent" (click)="editar(element)" matTooltip="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deletar(element.id!)" matTooltip="Deletar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <!-- Linha vazia -->
+            <tr class="mat-row empty-row" *ngIf="beneficios.length === 0">
+              <td colspan="5" class="empty-message">
+                Nenhum benefício cadastrado. Crie um novo!
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>

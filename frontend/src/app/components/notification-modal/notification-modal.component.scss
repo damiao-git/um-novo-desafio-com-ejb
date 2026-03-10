@@ -1,0 +1,63 @@
+.notification-modal {
+  min-width: 300px;
+  max-width: 500px;
+  text-align: center;
+
+  .notification-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    justify-content: center;
+
+    h2 {
+      margin: 0;
+      flex: 1;
+    }
+  }
+
+  .notification-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+
+    &.icon-success {
+      color: #4caf50;
+    }
+
+    &.icon-error {
+      color: #f44336;
+    }
+
+    &.icon-warning {
+      color: #ff9800;
+    }
+
+    &.icon-info {
+      color: #2196f3;
+    }
+  }
+
+  .notification-content {
+    padding: 16px 0;
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #666;
+    }
+  }
+
+  mat-dialog-actions {
+    padding: 16px 0 0 0;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+
+    button {
+      margin: 0 !important;
+    }
+  }
+}
