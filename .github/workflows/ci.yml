@@ -26,8 +26,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build ejb-module
-        run: mvn -B -f ejb-module clean package
+      - name: Build all modules
+        run: mvn -B clean package
 
-      - name: Build backend-module (with tests)
-        run: mvn -B -f backend-module clean package
+      - name: Run backend tests
+        run: mvn -B -pl backend-module test
