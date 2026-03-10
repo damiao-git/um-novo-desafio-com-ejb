@@ -1,7 +1,3 @@
-name: CI
-
-on: [push, pull_request]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,12 +9,18 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: maven
-      - name: Build and install EJB Module
+
+      - name: Build parent POM
+        run: |
+          cd beneficio-system
+          mvn clean install -B
+
+      - name: Build EJB Module
         run: |
           cd ejb-module
           mvn clean install -B
-      - name: Build backend
+
+      - name: Build Backend Module
         run: |
           cd backend-module
           mvn clean package -B
