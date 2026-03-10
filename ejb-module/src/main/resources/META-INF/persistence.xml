@@ -1,0 +1,16 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             version="2.2">
+
+    <persistence-unit name="beneficioPU">
+
+        <jta-data-source>java:/H2DS</jta-data-source>
+
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="jakarta.persistence.sql-load-script-source" value="seed.sql"/>
+        </properties>
+
+    </persistence-unit>
+
+</persistence>
