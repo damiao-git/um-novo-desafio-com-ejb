@@ -1,0 +1,4 @@
+com\example\ejb\entity\Beneficio.class
+com\example\ejb\rest\BeneficioRest.class
+com\example\ejb\service\BeneficioEjbService.class
+com\example\ejb\service\BeneficioServiceRemote.class
