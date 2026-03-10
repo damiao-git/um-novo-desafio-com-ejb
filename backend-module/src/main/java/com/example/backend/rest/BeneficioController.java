@@ -1,21 +1,48 @@
 package com.example.backend.rest;
 
+import com.example.backend.service.BeneficioService;
+import com.example.ejb.entity.Beneficio;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/v1/beneficios")
+@RequestMapping("/api/beneficios")
 public class BeneficioController {
 
+    private final BeneficioService service;
+
+    public BeneficioController(BeneficioService service) {
+        this.service = service;
+    }
+
     @GetMapping
-    public List<String> list() {
-        return Arrays.asList("Beneficio A", "Beneficio B");
+    public ResponseEntity<List<Beneficio>> listar() {
+        return ResponseEntity.ok(service.listar());
     }
 
-    @PostMapping("transferir")
-    public ResponseEntity<?> transferir(){
-        return null;
+    @GetMapping("/{id}")
+    public ResponseEntity<Beneficio> buscar(@PathVariable Long id) {
+        Beneficio b = service.buscarPorId(id);
+        return b != null ? ResponseEntity.ok(b) : ResponseEntity.notFound().build();
     }
 
+    @PostMapping
+    public ResponseEntity<Beneficio> criar(@RequestBody Beneficio beneficio) {
+        Beneficio criado = service.criar(beneficio);
+        return ResponseEntity.ok(criado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Beneficio> atualizar(@PathVariable Long id, @RequestBody Beneficio beneficio) {
+        beneficio.setId(id);
+        Beneficio atualizado = service.atualizar(beneficio);
+        return atualizado != null ? ResponseEntity.ok(atualizado) : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
 }

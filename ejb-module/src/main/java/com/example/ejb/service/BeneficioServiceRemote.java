@@ -10,7 +10,7 @@ public interface BeneficioServiceRemote {
 
     Beneficio criar(Beneficio beneficio);
 
-    Beneficio atualizar(Long id, Beneficio beneficio);
+    Beneficio atualizar(Beneficio beneficio);
 
     Beneficio buscar(Long id);
 

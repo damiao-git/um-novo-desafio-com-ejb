@@ -21,8 +21,8 @@ public class BeneficioEjbService implements BeneficioServiceRemote{
     }
 
     @Override
-    public Beneficio atualizar(Long id, Beneficio beneficio) {
-        Beneficio existente = em.find(Beneficio.class, id);
+    public Beneficio atualizar(Beneficio beneficio) {
+        Beneficio existente = em.find(Beneficio.class, beneficio.getId());
 
         existente.setNome(beneficio.getNome());
         existente.setDescricao(beneficio.getDescricao());
