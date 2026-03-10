@@ -1,0 +1,52 @@
+<div class="beneficio-container">
+  <h2>Gestão de Benefícios</h2>
+
+  <!-- Formulário -->
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <div>
+      <label>Nome:</label>
+      <input formControlName="nome" required>
+    </div>
+    <div>
+      <label>Descrição:</label>
+      <input formControlName="descricao">
+    </div>
+    <div>
+      <label>Valor:</label>
+      <input type="number" formControlName="valor" min="0" required>
+    </div>
+    <div>
+      <label>Ativo:</label>
+      <input type="checkbox" formControlName="ativo">
+    </div>
+    <button type="submit">{{ editId ? 'Atualizar' : 'Criar' }}</button>
+    <button type="button" (click)="cancelar()">Cancelar</button>
+  </form>
+
+  <hr>
+
+  <!-- Tabela -->
+  <table border="1" cellspacing="0" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Valor</th>
+        <th>Ativo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let b of beneficios">
+        <td>{{ b.nome }}</td>
+        <td>{{ b.descricao }}</td>
+        <td>{{ b.valor | currency:'BRL' }}</td>
+        <td>{{ b.ativo ? 'Sim' : 'Não' }}</td>
+        <td>
+          <button (click)="editar(b)">Editar</button>
+          <button (click)="deletar(b.id!)">Deletar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
