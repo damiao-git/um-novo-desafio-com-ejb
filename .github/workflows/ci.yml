@@ -28,6 +28,3 @@ jobs:
 
       - name: Build all modules
         run: mvn -B clean package
-
-      - name: Run backend tests
-        run: mvn -B -pl backend-module test
