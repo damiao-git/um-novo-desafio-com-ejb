@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Stateless
 public class BeneficioEjbService implements BeneficioServiceRemote{
@@ -13,7 +14,42 @@ public class BeneficioEjbService implements BeneficioServiceRemote{
     @PersistenceContext(unitName = "beneficioPU")
     private EntityManager em;
 
-    public void transfer(Long fromId, Long toId, BigDecimal amount) {
+    @Override
+    public Beneficio criar(Beneficio beneficio) {
+        em.persist(beneficio);
+        return beneficio;
+    }
+
+    @Override
+    public Beneficio atualizar(Long id, Beneficio beneficio) {
+        Beneficio existente = em.find(Beneficio.class, id);
+
+        existente.setNome(beneficio.getNome());
+        existente.setDescricao(beneficio.getDescricao());
+        existente.setValor(beneficio.getValor());
+
+        return em.merge(existente);
+    }
+
+    @Override
+    public Beneficio buscar(Long id) {
+        return em.find(Beneficio.class, id);
+    }
+
+    @Override
+    public List<Beneficio> listar() {
+        return em.createQuery("FROM Beneficio", Beneficio.class)
+                .getResultList();
+    }
+
+    @Override
+    public void deletar(Long id) {
+        Beneficio beneficio = em.find(Beneficio.class, id);
+        em.remove(beneficio);
+    }
+
+    @Override
+    public void transferir(Long fromId, Long toId, BigDecimal amount) {
 
         Beneficio from = em.find(
                 Beneficio.class,
