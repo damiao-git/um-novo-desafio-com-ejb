@@ -2,6 +2,8 @@ package com.example.ejb.service;
 
 import com.example.ejb.entity.Beneficio;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
@@ -16,6 +18,7 @@ public class BeneficioEjbService implements BeneficioServiceRemote{
 
     @Override
     public Beneficio criar(Beneficio beneficio) {
+        beneficio.setVersion(0L);
         em.persist(beneficio);
         return beneficio;
     }
@@ -23,7 +26,9 @@ public class BeneficioEjbService implements BeneficioServiceRemote{
     @Override
     public Beneficio atualizar(Beneficio beneficio) {
         Beneficio existente = em.find(Beneficio.class, beneficio.getId());
-
+        if (existente.getVersion() == null) {
+            existente.setVersion(0L);
+        }
         existente.setNome(beneficio.getNome());
         existente.setDescricao(beneficio.getDescricao());
         existente.setValor(beneficio.getValor());
@@ -49,19 +54,11 @@ public class BeneficioEjbService implements BeneficioServiceRemote{
     }
 
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void transferir(Long fromId, Long toId, BigDecimal amount) {
 
-        Beneficio from = em.find(
-                Beneficio.class,
-                fromId,
-                LockModeType.PESSIMISTIC_WRITE
-        );
-
-        Beneficio to = em.find(
-                Beneficio.class,
-                toId,
-                LockModeType.PESSIMISTIC_WRITE
-        );
+        Beneficio from = em.find(Beneficio.class, fromId, LockModeType.PESSIMISTIC_WRITE);
+        Beneficio to = em.find(Beneficio.class, toId, LockModeType.PESSIMISTIC_WRITE);
 
         if (from == null || to == null) {
             throw new IllegalArgumentException("Benefício não encontrado");
@@ -77,5 +74,8 @@ public class BeneficioEjbService implements BeneficioServiceRemote{
 
         from.setValor(from.getValor().subtract(amount));
         to.setValor(to.getValor().add(amount));
+
+        em.merge(from);
+        em.merge(to);
     }
 }

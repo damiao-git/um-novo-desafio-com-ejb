@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Properties;
 
@@ -50,5 +51,9 @@ public class BeneficioService {
 
     public Beneficio buscarPorId(Long id) {
         return ejbService.buscar(id);
+    }
+
+    public void transferir(Long origemId, Long destinoId, BigDecimal valor){
+        ejbService.transferir(origemId, destinoId, valor);
     }
 }

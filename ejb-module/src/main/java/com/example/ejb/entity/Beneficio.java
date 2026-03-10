@@ -28,7 +28,7 @@ public class Beneficio implements Serializable {
 
     @Version
     @Column(name = "VERSION")
-    private Long version;
+    private Long version = 0L;
 
     public Beneficio() {
     }
