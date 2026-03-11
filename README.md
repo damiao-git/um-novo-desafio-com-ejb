@@ -782,4 +782,4 @@ Para dúvidas ou sugestões sobre o projeto, abra uma issue no repositório.
 
 **Última atualização**: Março 2026  
 **Versão**: 1.0.0  
-**Status**: ✅ Preocução
+**Status**: ✅ Em Desenvolvimento(MVP pronto)
