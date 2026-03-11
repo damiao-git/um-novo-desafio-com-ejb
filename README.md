@@ -685,34 +685,39 @@ Content-Type: application/json
 
 ### application.yml (Backend)
 
-```yaml
-spring:
-  application:
-    name: backend-module
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: false
-  h2:
-    console:
-      enabled: true
+O backend-module **não acessa banco de dados diretamente**. Todas as operações de persistência são feitas através do **EJB remoto** (BeneficioEjbService). A configuração é mínima:
 
+```yaml
 server:
-  port: 8080
+  port: 8081
 ```
+
+**Fluxo de dados**:
+```
+HTTP Request (Frontend)
+    ↓
+BeneficioController (REST)
+    ↓
+BeneficioService (Spring Service)
+    ↓
+BeneficioServiceRemote (JNDI Lookup)
+    ↓
+BeneficioEjbService (EJB Remoto)
+    ↓
+JPA/Persistência (Banco de dados real)
+```
+
+**Observação**: O banco de dados é gerenciado **exclusivamente pelo módulo EJB**. Para desenvolvimento local, certifique-se que:
+1. O servidor de aplicação (JBoss/WildFly) está rodando
+2. O módulo EJB está deployado
+3. O JNDI lookup está configurado corretamente
 
 ### environment.ts (Frontend)
 
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api'
+  apiUrl: 'http://localhost:8081/api'
 };
 ```
 
